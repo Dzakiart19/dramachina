@@ -1,3 +1,8 @@
+# Vite
+dist/
+.vite/
+*.local
+
 # Logs
 logs
 *.log
@@ -7,14 +12,11 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
-dist
-dist-ssr
-*.local
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
+.vscode
 .idea
 .DS_Store
 *.suo
@@ -22,3 +24,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment
+.env
+.env.*.local
+
+# Build
+dist/
