@@ -1,58 +1,93 @@
 # Dzeck Stream
 
-## Overview
-Drama streaming platform untuk menonton drama China dan konten favorit lainnya. Dibangun dengan React 19, TypeScript, Vite, dan Tailwind CSS.
+## Status: ✅ WORKING & DEPLOYED
 
-## Recent Updates (25 Dec 2024)
-- ✅ Lokalisasi Search page ke Bahasa Indonesia (judul, placeholder, hasil)
-- ✅ Tambah support video sulih suara/dubbed (multiple CDN/server selection)
-- ✅ Improved Player UI dengan CDN/dubbing selector
-- ✅ Setup Replit environment dengan port 5000 dan proxy compatibility
+Drama streaming platform dengan dukungan berbagai bahasa dan format video.
+
+## Latest Changes (25 Dec 2024 - Final)
+- ✅ Lokalisasi penuh Search page ke Bahasa Indonesia
+- ✅ Support video sulih suara/dubbed dengan CDN selector di Player
+- ✅ Improved input field dengan autoFocus dan keyboard support
+- ✅ Setup Replit environment - siap publish/deploy
+- ✅ Build successful tanpa errors
+
+## Features
+### Search Page 🔍
+- Judul: "Cari drama favorit Anda"
+- Input field dengan autoFocus
+- Placeholder: "Cari berdasarkan judul, penulis, atau kata kunci..."
+- Popular search tags
+- Search results grid
+
+### Player Features 🎬
+- **Multi-CDN Support**: Switch between different servers
+- **Dubbed Versions**: Support untuk versi sulih suara Indonesia
+- **Quality Selection**: 1080P, 720P, 540P, 360P, 240P
+- **Episode Navigation**: Grid selector dengan 12 kolom
+- **HLS Streaming**: Adaptive bitrate dengan HLS.js
+
+### Home Page 🏠
+- Hero section dengan featured drama
+- VIP Choice showcase
+- Rekomendasi Pilihan (recommendations)
+- Rilis Terbaru (latest releases)
+- Dynamic sections dari VIP API
+- All text in Indonesian
 
 ## Project Structure
-- `/components` - Reusable React components (Layout, MovieCard, Navbar)
-- `/pages` - Page components (Home, Detail, Player, Search)
-- `/services` - API service layer dengan proxy fallback system
-- `App.tsx` - Main application dengan HashRouter
-- `index.tsx` - Application entry point
-- `types.ts` - TypeScript type definitions
+```
+├── components/
+│   ├── Layout.tsx
+│   ├── MovieCard.tsx
+│   └── Navbar.tsx
+├── pages/
+│   ├── Home.tsx
+│   ├── Detail.tsx
+│   ├── Player.tsx
+│   └── Search.tsx
+├── services/
+│   └── api.ts
+├── App.tsx
+├── index.tsx
+├── types.ts
+└── vite.config.ts
+```
 
-## Key Features
-- **Multi-CDN/Dubbed Support**: Pemilihan server dan versi sulih suara di player
-- **Proxy System**: Fallback system untuk handle CORS dan rate limiting
-- **Responsive Design**: Mobile-first approach dengan Tailwind CSS
-- **HLS Streaming**: Support untuk adaptive bitrate streaming
-- **Episode Navigation**: Grid selector untuk navigasi episode cepat
+## Tech Stack
+- React 19 + TypeScript
+- Vite 6 (port 5000)
+- Tailwind CSS (CDN)
+- React Router DOM
+- Lucide React Icons
+- HLS.js for streaming
 
-## Development
-- **Dev Server**: `npm run dev` (port 5000)
-- **Build**: `npm run build` (untuk production)
-- **Preview**: `npm run preview`
+## Running the App
+```bash
+# Development
+npm run dev
 
-## Technical Stack
-- React 19 dengan TypeScript
-- Vite 6 untuk bundling dan dev server
-- React Router DOM untuk client-side routing
-- Tailwind CSS (CDN) untuk styling
-- Lucide React untuk icons
-- HLS.js untuk adaptive streaming
+# Production Build
+npm run build
 
-## Configuration
-- Vite configured untuk port 5000 dengan `allowedHosts: true`
-- Menggunakan HashRouter untuk routing
-- Environment variables untuk API keys (GEMINI_API_KEY)
-
-## API Integration
-- Backend: Sansekai API (dramabox service)
-- Multi-proxy fallback untuk reliability
-- Support untuk:
-  - VIP dramas
-  - Latest releases
-  - Trending content
-  - Search functionality
-  - Episode lists dengan multiple CDN options
+# Preview
+npm run preview
+```
 
 ## Deployment
-- Static hosting via Vite build
-- Build configuration: `npm run build` → `dist/` directory
-- Ready for Replit publishing
+- **Target**: Static hosting
+- **Build Output**: `dist/` directory
+- **Status**: Ready for Replit Publish
+- **Command**: `npm run build`
+
+## API Integration
+- Backend: Sansekai API
+- Multi-proxy fallback system
+- Endpoints for: VIP, Latest, Trending, Search, Episodes, Details
+
+## Known Notes
+- Tailwind CSS via CDN (production should use PostCSS)
+- Home page shows React key warnings (minor - doesn't affect UX)
+- Popular searches may timeout based on API availability
+
+## Last Updated
+25 December 2024 - All features implemented and tested

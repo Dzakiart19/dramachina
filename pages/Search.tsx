@@ -47,7 +47,7 @@ const Search: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 min-h-screen">
       {/* Search Bar */}
       <div className="max-w-3xl mx-auto mb-16">
         <h1 className="text-3xl md:text-4xl font-black text-white text-center mb-8">
@@ -55,11 +55,13 @@ const Search: React.FC = () => {
         </h1>
         <form onSubmit={handleSearch} className="relative">
           <input 
+            autoFocus
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
             placeholder="Cari berdasarkan judul, penulis, atau kata kunci..."
-            className="w-full bg-slate-900 border-2 border-slate-800 rounded-2xl py-5 px-6 pl-14 text-white focus:outline-none focus:border-blue-500 transition-all text-lg shadow-xl"
+            className="w-full bg-slate-900 border-2 border-slate-800 rounded-2xl py-5 px-6 pl-14 text-white focus:outline-none focus:border-blue-500 transition-all text-lg shadow-xl focus:ring-2 focus:ring-blue-500"
           />
           <SearchIcon className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500" size={24} />
           {query && (
