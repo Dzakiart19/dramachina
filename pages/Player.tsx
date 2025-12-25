@@ -146,7 +146,7 @@ const Player: React.FC<PlayerProps> = ({ bookId, episodeId }) => {
         <Loader2 className="animate-spin text-blue-500 mb-6" size={60} />
         <div className="text-center">
           <p className="text-white font-black text-xl mb-2">DZECK STREAM</p>
-          <p className="text-slate-500 text-sm animate-pulse">Menghubungkan ke jalur video terenkripsi...</p>
+          <p className="text-slate-500 text-sm animate-pulse">Tunggu sebentar maaf agak lama karena pakai gratisan 😅</p>
         </div>
       </div>
     );

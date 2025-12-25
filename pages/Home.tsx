@@ -62,7 +62,7 @@ const Home: React.FC = () => {
           <Loader2 className="animate-spin text-blue-500" size={56} />
           <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full animate-pulse"></div>
         </div>
-        <p className="text-slate-400 font-medium animate-pulse tracking-wide">Membuka gerbang hiburan Dzeck Stream...</p>
+        <p className="text-slate-400 font-medium animate-pulse tracking-wide">Tunggu sebentar maaf agak lama karena pakai gratisan 😅</p>
       </div>
     );
   }

@@ -36,7 +36,7 @@ const Detail: React.FC<DetailProps> = ({ bookId }) => {
     return (
       <div className="flex flex-col items-center justify-center h-[70vh]">
         <Loader2 className="animate-spin text-blue-500 mb-4" size={48} />
-        <p className="text-slate-400">Loading drama details...</p>
+        <p className="text-slate-400">Tunggu sebentar maaf agak lama karena pakai gratisan 😅</p>
       </div>
     );
   }

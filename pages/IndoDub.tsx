@@ -33,7 +33,7 @@ const IndoDub: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center h-[70vh] gap-4">
         <Loader2 className="animate-spin text-blue-500" size={56} />
-        <p className="text-slate-400 font-medium">Memuat drama sulih suara...</p>
+        <p className="text-slate-400 font-medium">Tunggu sebentar maaf agak lama karena pakai gratisan 😅</p>
       </div>
     );
   }
