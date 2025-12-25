@@ -23,6 +23,7 @@ const Player: React.FC<PlayerProps> = ({ bookId, episodeId }) => {
   const [videoError, setVideoError] = useState(false);
   const [isBlockedByGoogle, setIsBlockedByGoogle] = useState(false);
   const [selectedQuality, setSelectedQuality] = useState<number>(1080);
+  const [selectedCdnIndex, setSelectedCdnIndex] = useState<number>(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const connectionTimeoutRef = useRef<number | null>(null);
 
@@ -65,9 +66,10 @@ const Player: React.FC<PlayerProps> = ({ bookId, episodeId }) => {
 
   const currentVideoSource = useMemo(() => {
     if (!currentEpisode || !currentEpisode.cdnList || currentEpisode.cdnList.length === 0) return null;
-    const pathList = currentEpisode.cdnList[0]?.videoPathList || [];
+    const validIndex = Math.min(selectedCdnIndex, currentEpisode.cdnList.length - 1);
+    const pathList = currentEpisode.cdnList[validIndex]?.videoPathList || [];
     return pathList.find(v => v.quality === selectedQuality) || pathList[0];
-  }, [currentEpisode, selectedQuality]);
+  }, [currentEpisode, selectedQuality, selectedCdnIndex]);
 
   useEffect(() => {
     if (!currentVideoSource || !videoRef.current || loading) return;
@@ -110,8 +112,21 @@ const Player: React.FC<PlayerProps> = ({ bookId, episodeId }) => {
 
   const availableQualities = useMemo(() => {
     if (!currentEpisode || !currentEpisode.cdnList || currentEpisode.cdnList.length === 0) return [];
-    return currentEpisode.cdnList[0]?.videoPathList?.map(v => v.quality) || [];
-  }, [currentEpisode]);
+    const validIndex = Math.min(selectedCdnIndex, currentEpisode.cdnList.length - 1);
+    return currentEpisode.cdnList[validIndex]?.videoPathList?.map(v => v.quality) || [];
+  }, [currentEpisode, selectedCdnIndex]);
+
+  const getCdnLabel = (index: number): string => {
+    if (!currentEpisode || !currentEpisode.cdnList) return 'Server';
+    const cdn = currentEpisode.cdnList[index];
+    const domain = cdn?.cdnDomain?.toLowerCase() || '';
+    
+    // Detect language/dub type from domain or position
+    if (domain.includes('dub') || domain.includes('indo')) return 'Sulih Suara Indonesia';
+    if (index === 0) return 'Server 1';
+    if (index === 1) return 'Sulih Suara';
+    return `Server ${index + 1}`;
+  };
 
   const nextEpisode = useMemo(() => {
     if (!currentEpisode || episodes.length === 0) return null;
@@ -214,58 +229,83 @@ const Player: React.FC<PlayerProps> = ({ bookId, episodeId }) => {
         </div>
 
         {/* Video Info & Controls */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Left: Episodes Navigation */}
-          <div className="md:col-span-7 flex flex-wrap items-center gap-4">
-            {prevEpisode && (
-              <a 
-                href={`#/player/${bookId}/${prevEpisode.chapterId}`}
-                className="flex items-center gap-3 px-8 py-4 bg-slate-900/60 hover:bg-slate-800 text-white rounded-2xl font-black text-sm border border-slate-800 transition-all hover:-translate-y-1"
-              >
-                <ChevronLeft size={20} /> EP SEBELUMNYA
-              </a>
-            )}
-            {nextEpisode && (
-              <a 
-                href={`#/player/${bookId}/${nextEpisode.chapterId}`}
-                className="flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-sm transition-all hover:scale-105 shadow-xl shadow-blue-600/20"
-              >
-                EP SELANJUTNYA <ChevronRight size={20} />
-              </a>
-            )}
-          </div>
+        <div className="mt-8 flex flex-col gap-6">
+          {/* CDN/Dubbing Selection */}
+          {currentEpisode && currentEpisode.cdnList && currentEpisode.cdnList.length > 1 && (
+            <div className="flex items-center gap-3 p-3 bg-slate-900/40 rounded-2xl border border-slate-800 flex-wrap">
+              <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] ml-2">Server/Dubbing</span>
+              <div className="flex gap-1.5">
+                {currentEpisode.cdnList.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => { setSelectedCdnIndex(idx); setIsBlockedByGoogle(false); }}
+                    className={`px-4 py-2 text-[9px] font-black rounded-xl transition-all whitespace-nowrap ${
+                      selectedCdnIndex === idx 
+                      ? 'bg-blue-600 text-white shadow-lg' 
+                      : 'bg-slate-800 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {getCdnLabel(idx)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
-          {/* Right: Quality & Extra Actions */}
-          <div className="md:col-span-5 flex items-center justify-end gap-4">
-             <div className="flex items-center gap-3 p-2 bg-slate-900/40 rounded-2xl border border-slate-800">
-               <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] ml-2">Quality</span>
-               <div className="flex gap-1.5">
-                 {availableQualities.map(q => (
-                   <button
-                     key={q}
-                     onClick={() => { setSelectedQuality(q); setIsBlockedByGoogle(false); }}
-                     className={`px-4 py-2 text-[10px] font-black rounded-xl transition-all ${
-                       selectedQuality === q 
-                       ? 'bg-blue-600 text-white shadow-lg' 
-                       : 'bg-slate-800 text-slate-400 hover:text-white'
-                     }`}
-                   >
-                     {q}P
-                   </button>
-                 ))}
-               </div>
-             </div>
-             {currentVideoSource && (
-               <a 
-                 href={currentVideoSource.videoPath} 
-                 target="_blank" 
-                 rel="noreferrer" 
-                 className="p-4 bg-slate-800/80 text-white rounded-2xl hover:bg-blue-600 transition-all group"
-                 title="Bypass Mode (Buka di Tab Baru)"
-               >
-                 <ExternalLink size={24} className="group-hover:rotate-12 transition-transform" />
-               </a>
-             )}
+          {/* Episodes Navigation & Quality */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            {/* Left: Episodes Navigation */}
+            <div className="md:col-span-7 flex flex-wrap items-center gap-4">
+              {prevEpisode && (
+                <a 
+                  href={`#/player/${bookId}/${prevEpisode.chapterId}`}
+                  className="flex items-center gap-3 px-8 py-4 bg-slate-900/60 hover:bg-slate-800 text-white rounded-2xl font-black text-sm border border-slate-800 transition-all hover:-translate-y-1"
+                >
+                  <ChevronLeft size={20} /> EP SEBELUMNYA
+                </a>
+              )}
+              {nextEpisode && (
+                <a 
+                  href={`#/player/${bookId}/${nextEpisode.chapterId}`}
+                  className="flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-sm transition-all hover:scale-105 shadow-xl shadow-blue-600/20"
+                >
+                  EP SELANJUTNYA <ChevronRight size={20} />
+                </a>
+              )}
+            </div>
+
+            {/* Right: Quality & Extra Actions */}
+            <div className="md:col-span-5 flex items-center justify-end gap-4">
+              <div className="flex items-center gap-3 p-2 bg-slate-900/40 rounded-2xl border border-slate-800">
+                <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] ml-2">Quality</span>
+                <div className="flex gap-1.5">
+                  {availableQualities.map(q => (
+                    <button
+                      key={q}
+                      onClick={() => { setSelectedQuality(q); setIsBlockedByGoogle(false); }}
+                      className={`px-4 py-2 text-[10px] font-black rounded-xl transition-all ${
+                        selectedQuality === q 
+                        ? 'bg-blue-600 text-white shadow-lg' 
+                        : 'bg-slate-800 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {q}P
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {currentVideoSource && (
+                <a 
+                  href={currentVideoSource.videoPath} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="p-4 bg-slate-800/80 text-white rounded-2xl hover:bg-blue-600 transition-all group"
+                  title="Bypass Mode (Buka di Tab Baru)"
+                >
+                  <ExternalLink size={24} className="group-hover:rotate-12 transition-transform" />
+                </a>
+              )}
+            </div>
           </div>
         </div>
 

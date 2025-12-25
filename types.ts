@@ -19,15 +19,17 @@ export interface VideoPath {
   isDefault: number;
 }
 
+export interface CDN {
+  cdnDomain: string;
+  isDefault: number;
+  videoPathList: VideoPath[];
+}
+
 export interface Episode {
   chapterId: string;
   chapterIndex: number;
   chapterName: string;
-  cdnList: {
-    cdnDomain: string;
-    isDefault: number;
-    videoPathList: VideoPath[];
-  }[];
+  cdnList: CDN[];
 }
 
 export interface VIPResponse {
